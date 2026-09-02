@@ -23,7 +23,7 @@
 		19EE1D3221830480D60A1648 /* libPods-TegneTroll.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TegneTroll.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F6DE43C759429E9BCABD0DB /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TegneTroll/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		7FE57918801553EF73751F28 /* Pods-TegneTroll.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TegneTroll.release.xcconfig"; path = "Target Support Files/Pods-TegneTroll/Pods-TegneTroll.release.xcconfig"; sourceTree = "<group>"; };
-		94A5153F8BF56B400FDF4C91 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = TegneTroll/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		94A5153F8BF56B400FDF4C91 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = TegneTroll/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9957E8820BEC97291165E16C /* Pods-TegneTroll.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TegneTroll.debug.xcconfig"; path = "Target Support Files/Pods-TegneTroll/Pods-TegneTroll.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = TegneTroll/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
@@ -128,7 +128,6 @@
 				9957E8820BEC97291165E16C /* Pods-TegneTroll.debug.xcconfig */,
 				7FE57918801553EF73751F28 /* Pods-TegneTroll.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -353,12 +352,15 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TegneTroll/TegneTroll.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VX3485NVB3;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = TegneTroll/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TegneTroll;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -390,7 +392,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = TegneTroll/TegneTroll.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VX3485NVB3;
 				INFOPLIST_FILE = TegneTroll/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TegneTroll;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

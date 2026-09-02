@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Canvas, Fill, Path, Skia, useCanvasRef } from '@shopify/react-native-skia';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { File, Paths } from 'expo-file-system';
@@ -151,11 +152,11 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
           <Text style={styles.iconButtonText}>{'‹ Tilbake'}</Text>
         </Pressable>
         <View style={styles.topBarActions}>
-          <Pressable style={styles.iconButton} onPress={handleUndo} disabled={strokes.length === 0}>
-            <Text style={[styles.iconButtonText, strokes.length === 0 && styles.disabledText]}>Angre</Text>
+          <Pressable style={[styles.topActionButton, styles.saveButton]} onPress={handleSave}>
+            <Text style={styles.topActionButtonText}>Lagre</Text>
           </Pressable>
-          <Pressable style={styles.iconButton} onPress={handleClear} disabled={strokes.length === 0}>
-            <Text style={[styles.iconButtonText, strokes.length === 0 && styles.disabledText]}>Visk ut</Text>
+          <Pressable style={[styles.topActionButton, styles.exportButton]} onPress={handleExport}>
+            <Text style={styles.topActionButtonText}>Del til galleri</Text>
           </Pressable>
         </View>
       </View>
@@ -212,14 +213,23 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
               <View style={[styles.thicknessDot, { width: t, height: t, borderRadius: t / 2 }]} />
             </Pressable>
           ))}
-        </View>
-
-        <View style={styles.row}>
-          <Pressable style={[styles.actionButton, styles.saveButton]} onPress={handleSave}>
-            <Text style={styles.actionButtonText}>Lagre</Text>
+          <Pressable
+            style={[
+              styles.bottomActionButton,
+              styles.bottomActionButtonSpaced,
+              strokes.length === 0 && styles.bottomActionButtonDisabled,
+            ]}
+            onPress={handleUndo}
+            disabled={strokes.length === 0}
+          >
+            <Ionicons name="arrow-undo" size={22} color={strokes.length === 0 ? '#C9C2B4' : '#2E2A24'} />
           </Pressable>
-          <Pressable style={[styles.actionButton, styles.exportButton]} onPress={handleExport}>
-            <Text style={styles.actionButtonText}>Del til galleri</Text>
+          <Pressable
+            style={[styles.bottomActionButton, strokes.length === 0 && styles.bottomActionButtonDisabled]}
+            onPress={handleClear}
+            disabled={strokes.length === 0}
+          >
+            <Ionicons name="trash" size={22} color={strokes.length === 0 ? '#C9C2B4' : '#2E2A24'} />
           </Pressable>
         </View>
       </View>
@@ -318,5 +328,35 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '700',
     fontSize: 16,
+  },
+  topActionButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+  },
+  topActionButtonText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  bottomActionButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F4EEDD',
+  },
+  bottomActionButtonSpaced: {
+    marginLeft: 20,
+  },
+  bottomActionButtonDisabled: {
+    backgroundColor: '#F9F5EB',
+  },
+  bottomActionButtonIcon: {
+    fontSize: 22,
+  },
+  disabledIcon: {
+    opacity: 0.35,
   },
 });
