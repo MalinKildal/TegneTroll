@@ -8,7 +8,10 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.malinkildal.TegneTroll"
+      "bundleIdentifier": "com.malinkildal.TegneTroll",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
