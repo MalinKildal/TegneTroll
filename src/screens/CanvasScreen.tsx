@@ -46,6 +46,9 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
     .runOnJS(true)
     .minDistance(0)
     .maxPointers(1)
+    .onTouchesDown((_e, stateManager) => {
+      stateManager.activate();
+    })
     .onBegin((e) => {
       strokeInProgressRef.current = { color, width: thickness };
       const path = Skia.Path.Make();
