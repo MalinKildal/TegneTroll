@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { GalleryScreen } from './src/screens/GalleryScreen';
 import { CanvasScreen } from './src/screens/CanvasScreen';
@@ -20,13 +20,13 @@ export default function App() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <StatusBar style="dark" />
       {screen.name === 'gallery' ? (
         <GalleryScreen key={galleryKey} onOpenDrawing={openDrawing} />
       ) : (
         <CanvasScreen drawingId={screen.drawingId} onBack={goToGallery} />
       )}
-    </GestureHandlerRootView>
+    </View>
   );
 }

@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, PanResponder, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Canvas, Fill, Path, Skia, useCanvasRef } from '@shopify/react-native-skia';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { File, Paths } from 'expo-file-system';
 import { Asset, requestPermissionsAsync } from 'expo-media-library';
 import { CANVAS_BACKGROUND, COLORS, THICKNESSES } from '../colors';
@@ -27,6 +26,11 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
   const [thickness, setThickness] = useState(THICKNESSES[1]);
   const [dirty, setDirty] = useState(false);
 
+  const colorRef = useRef(color);
+  colorRef.current = color;
+  const thicknessRef = useRef(thickness);
+  thicknessRef.current = thickness;
+
   useEffect(() => {
     if (!drawingId) return;
     loadDrawing(drawingId).then((saved) => {
@@ -42,35 +46,43 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
     });
   }, [drawingId]);
 
-  const pan = Gesture.Pan()
-    .runOnJS(true)
-    .minDistance(0)
-    .maxPointers(1)
-    .onTouchesDown((_e, stateManager) => {
-      stateManager.activate();
-    })
-    .onBegin((e) => {
-      strokeInProgressRef.current = { color, width: thickness };
-      const path = Skia.Path.Make();
-      path.moveTo(e.x, e.y);
-      path.lineTo(e.x + 0.1, e.y + 0.1);
-      currentPathRef.current = path;
-      setDrawTick((t) => t + 1);
-    })
-    .onUpdate((e) => {
-      currentPathRef.current.lineTo(e.x, e.y);
-      setDrawTick((t) => t + 1);
-    })
-    .onFinalize(() => {
-      const meta = strokeInProgressRef.current;
-      if (!meta) return;
-      const finished = currentPathRef.current;
-      setStrokes((prev) => [...prev, { color: meta.color, width: meta.width, path: finished }]);
-      setDirty(true);
-      currentPathRef.current = Skia.Path.Make();
-      strokeInProgressRef.current = null;
-      setDrawTick((t) => t + 1);
-    });
+  const commitStroke = useCallback(() => {
+    const meta = strokeInProgressRef.current;
+    if (!meta) return;
+    const finished = currentPathRef.current;
+    setStrokes((prev) => [...prev, { color: meta.color, width: meta.width, path: finished }]);
+    setDirty(true);
+    currentPathRef.current = Skia.Path.Make();
+    strokeInProgressRef.current = null;
+    setDrawTick((t) => t + 1);
+  }, []);
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponderCapture: () => true,
+        onPanResponderGrant: (e) => {
+          const { locationX, locationY } = e.nativeEvent;
+          strokeInProgressRef.current = { color: colorRef.current, width: thicknessRef.current };
+          const path = Skia.Path.Make();
+          path.moveTo(locationX, locationY);
+          path.lineTo(locationX + 0.1, locationY + 0.1);
+          currentPathRef.current = path;
+          setDrawTick((t) => t + 1);
+        },
+        onPanResponderMove: (e) => {
+          const { locationX, locationY } = e.nativeEvent;
+          currentPathRef.current.lineTo(locationX, locationY);
+          setDrawTick((t) => t + 1);
+        },
+        onPanResponderRelease: commitStroke,
+        onPanResponderTerminate: commitStroke,
+      }),
+    [commitStroke]
+  );
 
   const handleUndo = useCallback(() => {
     setStrokes((prev) => prev.slice(0, -1));
@@ -164,32 +176,30 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
         </View>
       </View>
 
-      <GestureDetector gesture={pan}>
-        <View style={styles.canvasWrapper}>
-          <Canvas ref={canvasRef} style={StyleSheet.absoluteFill}>
-            <Fill color={CANVAS_BACKGROUND} />
-            {strokes.map((s, i) => (
-              <Path
-                key={i}
-                path={s.path}
-                color={s.color}
-                style="stroke"
-                strokeWidth={s.width}
-                strokeCap="round"
-                strokeJoin="round"
-              />
-            ))}
+      <View style={styles.canvasWrapper} {...panResponder.panHandlers}>
+        <Canvas ref={canvasRef} style={StyleSheet.absoluteFill}>
+          <Fill color={CANVAS_BACKGROUND} />
+          {strokes.map((s, i) => (
             <Path
-              path={currentPathRef.current}
-              color={color}
+              key={i}
+              path={s.path}
+              color={s.color}
               style="stroke"
-              strokeWidth={thickness}
+              strokeWidth={s.width}
               strokeCap="round"
               strokeJoin="round"
             />
-          </Canvas>
-        </View>
-      </GestureDetector>
+          ))}
+          <Path
+            path={currentPathRef.current}
+            color={color}
+            style="stroke"
+            strokeWidth={thickness}
+            strokeCap="round"
+            strokeJoin="round"
+          />
+        </Canvas>
+      </View>
 
       <View style={styles.bottomBar}>
         <View style={styles.row}>
