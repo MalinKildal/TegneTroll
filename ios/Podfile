@@ -63,5 +63,24 @@ target 'TegneTroll' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
+
+    # Expo's prebuilt React Native Core binary is compiled with NDEBUG defined,
+    # so react/debug/flags.h resolves REACT_NATIVE_PRODUCTION there. Any Fabric
+    # component compiled from source in a Debug build (e.g. react-native-skia,
+    # react-native-gesture-handler's generated codegen) instead resolves
+    # REACT_NATIVE_DEBUG, giving Sealable a real constructor/destructor that
+    # only the prebuilt binary's release-mode Sealable (inline no-ops) doesn't
+    # export - an undefined symbol at link time. Forcing REACT_NATIVE_PRODUCTION
+    # for Debug pod builds too keeps them consistent with the prebuilt binary.
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |build_configuration|
+        next unless build_configuration.name == 'Debug'
+
+        defs = build_configuration.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] || ['$(inherited)']
+        defs = Array(defs)
+        defs << 'REACT_NATIVE_PRODUCTION=1' unless defs.include?('REACT_NATIVE_PRODUCTION=1')
+        build_configuration.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = defs
+      end
+    end
   end
 end
