@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, PanResponder, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Canvas, Fill, Path, Skia, useCanvasRef } from '@shopify/react-native-skia';
 import { File, Paths } from 'expo-file-system';

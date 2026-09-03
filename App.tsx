@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GalleryScreen } from './src/screens/GalleryScreen';
 import { CanvasScreen } from './src/screens/CanvasScreen';
 
@@ -20,13 +20,13 @@ export default function App() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaProvider>
       <StatusBar style="dark" />
       {screen.name === 'gallery' ? (
         <GalleryScreen key={galleryKey} onOpenDrawing={openDrawing} />
       ) : (
         <CanvasScreen drawingId={screen.drawingId} onBack={goToGallery} />
       )}
-    </View>
+    </SafeAreaProvider>
   );
 }

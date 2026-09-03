@@ -1,14 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Alert,
-  FlatList,
-  Image,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Alert, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { deleteDrawing, listDrawings, thumbnailUri } from '../storage';
 import type { DrawingSummary } from '../types';
 
