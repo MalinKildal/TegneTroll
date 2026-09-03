@@ -213,6 +213,7 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
               style={[
                 styles.colorSwatch,
                 { backgroundColor: c },
+                c === '#FFFFFF' && styles.colorSwatchWhiteOutline,
                 color === c && styles.colorSwatchSelected,
               ]}
             />
@@ -307,6 +308,9 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  colorSwatchWhiteOutline: {
     borderColor: '#EADFCB',
   },
   colorSwatchSelected: {
