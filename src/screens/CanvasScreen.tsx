@@ -17,7 +17,8 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
   const canvasRef = useCanvasRef();
   const idRef = useRef(drawingId ?? newDrawingId());
   const createdAtRef = useRef(Date.now());
-  const currentPathRef = useRef(Skia.Path.Make());
+  const currentPathRef = useRef(Skia.PathBuilder.Make().build());
+  const currentBuilderRef = useRef(Skia.PathBuilder.Make());
   const strokeInProgressRef = useRef<{ color: string; width: number } | null>(null);
 
   const [strokes, setStrokes] = useState<LiveStroke[]>([]);
@@ -49,10 +50,10 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
   const commitStroke = useCallback(() => {
     const meta = strokeInProgressRef.current;
     if (!meta) return;
-    const finished = currentPathRef.current;
+    const finished = currentBuilderRef.current.detach();
     setStrokes((prev) => [...prev, { color: meta.color, width: meta.width, path: finished }]);
     setDirty(true);
-    currentPathRef.current = Skia.Path.Make();
+    currentPathRef.current = Skia.PathBuilder.Make().build();
     strokeInProgressRef.current = null;
     setDrawTick((t) => t + 1);
   }, []);
@@ -67,15 +68,17 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
         onPanResponderGrant: (e) => {
           const { locationX, locationY } = e.nativeEvent;
           strokeInProgressRef.current = { color: colorRef.current, width: thicknessRef.current };
-          const path = Skia.Path.Make();
-          path.moveTo(locationX, locationY);
-          path.lineTo(locationX + 0.1, locationY + 0.1);
-          currentPathRef.current = path;
+          const builder = Skia.PathBuilder.Make();
+          builder.moveTo(locationX, locationY);
+          builder.lineTo(locationX + 0.1, locationY + 0.1);
+          currentBuilderRef.current = builder;
+          currentPathRef.current = builder.build();
           setDrawTick((t) => t + 1);
         },
         onPanResponderMove: (e) => {
           const { locationX, locationY } = e.nativeEvent;
-          currentPathRef.current.lineTo(locationX, locationY);
+          currentBuilderRef.current.lineTo(locationX, locationY);
+          currentPathRef.current = currentBuilderRef.current.build();
           setDrawTick((t) => t + 1);
         },
         onPanResponderRelease: commitStroke,
@@ -304,7 +307,7 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: '#EADFCB',
   },
   colorSwatchSelected: {
     borderColor: '#2E2A24',
