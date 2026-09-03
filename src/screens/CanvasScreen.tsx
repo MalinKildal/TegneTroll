@@ -61,7 +61,7 @@ export function CanvasScreen({ drawingId, onBack }: Props) {
       currentPathRef.current.lineTo(e.x, e.y);
       setDrawTick((t) => t + 1);
     })
-    .onEnd(() => {
+    .onFinalize(() => {
       const meta = strokeInProgressRef.current;
       if (!meta) return;
       const finished = currentPathRef.current;
